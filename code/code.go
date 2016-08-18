@@ -44,22 +44,22 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	fmt.Printf("KYC Completed by Customer = %t, KYC Completed by Bank = %t, KYC Completed by both = %t\n", kycCust, kycBank, kycAll)
 
 	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(custName)))
+	err = stub.PutState(custName, []byte(strconv.Itoa(custName)))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.Itoa(custMob)))
+	err = stub.PutState(bankName, []byte(strconv.Itoa(bankName)))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(C, []byte(strconv.Itoa(bankName)))
+	err = stub.PutState(custMob, []byte(strconv.Itoa(custMob)))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(D, []byte(strconv.Itoa(bankCode)))
+	err = stub.PutState(bankCode, []byte(strconv.Itoa(bankCode)))
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 
 	// Get the state from the ledger
 	// TODO: will be nice to have a GetAllState call to ledger
-	custNamebytes, err := stub.GetState(A)
+	custNamebytes, err := stub.GetState(custName)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
 	}
@@ -152,7 +152,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	// return nil, nil
 	
 	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(custName)))
+	err = stub.PutState(custName, []byte(strconv.Itoa(custName)))
 	if err != nil {
 		return nil, err
 	}
