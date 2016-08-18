@@ -20,7 +20,7 @@ type SimpleChaincode struct {
 
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	var custName, bankName string    // Entities	A,B
-	var custMob, bankCode int // Asset holdings		Aval,Bval
+	var custMob, bankCode string // Asset holdings		Aval,Bval
 	var err error
 	var kycCust, kycBank, kycAll bool
 	
@@ -30,41 +30,43 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 	// Initialize the chaincode
 	custName = args[0]
-	custMob, err = strconv.Atoi(args[1])
+	custMob = args[2]
+	// custMob, err = strconv.Atoi(args[1])
 	if err != nil {
 		return nil, errors.New("Expecting integer value for Customer mobile")	// Expecting integer value for asset holdings
 	}
-	bankName = args[2]
-	bankCode, err = strconv.Atoi(args[3])
+	bankName = args[1]
+	bankCode = args[3]
+	// bankCode, err = strconv.Atoi(args[3])
 	if err != nil {
 		return nil, errors.New("Expecting integer value for bank code")			// Expecting integer value for asset holdings 
 	}
-	fmt.Printf("Customer Name = %s, Customer Mobile = %d\n", custName, custMob)
-	fmt.Printf("Bank Name = %s, Bank Code = %d\n", bankName, bankCode)
+	fmt.Printf("Customer Name = %s, Customer Mobile = %s\n", custName, custMob)
+	fmt.Printf("Bank Name = %s, Bank Code = %s\n", bankName, bankCode)
 	fmt.Printf("KYC Completed by Customer = %t, KYC Completed by Bank = %t, KYC Completed by both = %t\n", kycCust, kycBank, kycAll)
 
 	// Write the state to the ledger
-	err = stub.PutState(custName, []byte(strconv.Itoa(custName)))
+	err = stub.PutState(custName, []byte(custName))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(bankName, []byte(strconv.Itoa(bankName)))
+	err = stub.PutState(bankName, []byte(bankName))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(custMob, []byte(strconv.Itoa(custMob)))
+	err = stub.PutState(custMob, []byte(custMob))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(bankCode, []byte(strconv.Itoa(bankCode)))
+	err = stub.PutState(bankCode, []byte(bankCode))
 	if err != nil {
 		return nil, err
 	}
 	
-	return nil, nil, nil, nil
+	return nil, nil
 }
 
 // Transaction makes payment of X units from A to B
