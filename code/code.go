@@ -77,7 +77,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	}
 
 	var custName, bankName string    // Entities	A,B
-	var custMob, bankCode int // Asset holdings		Aval,Bval
+	var custMob, bankCode string // Asset holdings		Aval,Bval
 	var X int          // Transaction value
 	var err error
 
@@ -99,16 +99,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	}
 	custName, _ = strconv.Atoi(string(custNamebytes))
 
-	custMobbytes, err := stub.GetState(B)
-	if err != nil {
-		return nil, errors.New("Failed to get state")
-	}
-	if custMobbytes == nil {
-		return nil, errors.New("Entity not found")
-	}
-	custMob, _ = strconv.Atoi(string(custMobbytes))
-
-	bankNamebytes, err := stub.GetState(C)
+	bankNamebytes, err := stub.GetState(bankName)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
 	}
@@ -117,7 +108,16 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	}
 	bankName, _ = strconv.Atoi(string(bankNamebytes))
 
-	bankCodebytes, err := stub.GetState(D)
+	custMobbytes, err := stub.GetState(custMob)
+	if err != nil {
+		return nil, errors.New("Failed to get state")
+	}
+	if custMobbytes == nil {
+		return nil, errors.New("Entity not found")
+	}
+	custMob, _ = strconv.Atoi(string(custMobbytes))
+
+	bankCodebytes, err := stub.GetState(bankCode)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
 	}
@@ -126,9 +126,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	}
 	bankCode, _ = strconv.Atoi(string(bankCodebytes))
 
-	kycCust = true
-	kycBank = false
-	kycAll = false
+	var kycCust bool = true
+	var kycBank bool = false
+	var kycAll bool = false
 	
 	// Perform the execution
 	// X, err = strconv.Atoi(args[2])
@@ -154,27 +154,27 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	// return nil, nil
 	
 	// Write the state to the ledger
-	err = stub.PutState(custName, []byte(strconv.Itoa(custName)))
+	err = stub.PutState(custName, []byte(custName))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.Itoa(custMob)))
+	err = stub.PutState(bankName, []byte(bankName))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(C, []byte(strconv.Itoa(bankName)))
+	err = stub.PutState(custMob, []byte(custMob))
 	if err != nil {
 		return nil, err
 	}
 	
-	err = stub.PutState(D, []byte(strconv.Itoa(bankCode)))
+	err = stub.PutState(bankCode, []byte(bankCode))
 	if err != nil {
 		return nil, err
 	}
 	
-	return nil, nil, nil, nil
+	return nil, nil
 }
 
 // Deletes an entity from state
