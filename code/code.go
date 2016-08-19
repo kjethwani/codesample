@@ -9,7 +9,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"strconv"
+	// "strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -78,7 +78,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 
 	var custName, bankName string    // Entities	A,B
 	var custMob, bankCode string // Asset holdings		Aval,Bval
-	var X int          // Transaction value
+	// var X int          // Transaction value
 	var err error
 
 	if len(args) != 3 {
@@ -97,8 +97,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	if custNamebytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	custName, _ = strconv.Atoi(string(custNamebytes))
-
+	// custName, _ = (string(custNamebytes))
+	custName = (string(custNamebytes))
+	
 	bankNamebytes, err := stub.GetState(bankName)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
@@ -106,8 +107,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	if bankNamebytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	bankName, _ = strconv.Atoi(string(bankNamebytes))
-
+	// bankName, _ = strconv.Atoi(string(bankNamebytes))
+	bankName = (string(bankNamebytes))
+	
 	custMobbytes, err := stub.GetState(custMob)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
@@ -115,8 +117,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	if custMobbytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	custMob, _ = strconv.Atoi(string(custMobbytes))
-
+	// custMob, _ = strconv.Atoi(string(custMobbytes))
+	custMob = (string(custMobbytes))
+	
 	bankCodebytes, err := stub.GetState(bankCode)
 	if err != nil {
 		return nil, errors.New("Failed to get state")
@@ -124,8 +127,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	if bankCodebytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	bankCode, _ = strconv.Atoi(string(bankCodebytes))
-
+	// bankCode, _ = strconv.Atoi(string(bankCodebytes))
+	bankCode = (string(bankCodebytes))
+	
 	var kycCust bool = true
 	var kycBank bool = false
 	var kycAll bool = false
@@ -233,4 +237,3 @@ func main() {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }
-
